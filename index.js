@@ -1237,8 +1237,13 @@ const exercicio50 = () => {
 
 
   function avaliacaoCliente(hotel) {
-    const nomeCliente = prompt(`Digite o nome do cliente .: `).toLowerCase();    
     
+    const nomeCliente = prompt(`Digite o nome do cliente .: `).toLowerCase();    
+
+    if(reservas.length === 0 || hotel.length === 0 ) { 
+      console.log('Não foram encontradas reservas ou hoteis cadastrados no sistema')
+      return
+    }    
     let encontraReserva = reservas.filter(element => element.nomeCliente.toLowerCase() === nomeCliente);
     let idHotel = null;
     if (encontraReserva[0].checkin) {  
