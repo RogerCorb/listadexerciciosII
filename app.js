@@ -58,10 +58,10 @@ while (!sair) {
             exercicios.exercicio15();
             break;
         case 16:
-            exercicios.xercicio16();
+            exercicios.exercicio16();
             break
         case 17:
-            exercicios.xercicio17();
+            exercicios.exercicio17();
             break;
         case 18:
             exercicios.exercicio18();
@@ -94,7 +94,7 @@ while (!sair) {
             exercicios.exercicio27();
             break;
         case 28:
-            exercicios.xercicio28();
+            exercicios.exercicio28();
             break
         case 29:
             exercicios.exercicio29();

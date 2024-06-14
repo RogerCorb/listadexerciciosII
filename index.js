@@ -1072,40 +1072,15 @@ const exercicio50 = () => {
     console.log(`\n1 - Cadastrar hoteis.:\n2 - Listar hoteis.:\n3 - Fazer reserva.:\n4 - Cancelar Reserva.:\n5 - Listar reserva.:\n6 - CheckIn.:\n7 - Checkout.:\n8 - Relatorio ocupacao.:\n9 - Avaliar hotel.:\n10 - Sair`);
     opcao = parseInt(prompt(`Digite sua opcao.:`));
 
-    switch (opcao) {
-      case 1:
-        cadastrarHotel();        
-        break;      
-      case 2:
-        listaHoteisCidade();        
-        break;
-      case 3:        
-        fazerReserva();
-        break;
-      case 4:
-        cancelaReserva();       
-        break;
-      case 5:        
-        listarReservas();
-        break;
-      case 6:
-        checkIn();        
-        break;
-      case 7:
-        checkOut();       
-        break;
-      case 8:        
-        relatorioOcupacao(reservas,hoteis);
-        break;
-      case 9: 
-        hoteis = avaliacaoCliente(hoteis);        
-        break;
-      case 10:
-        opcao = 10;        
-        break;
-      default:
-        break;
-    }
+    if ( opcao === 1 ) cadastrarHotel();
+    if ( opcao === 2 ) listaHoteisCidade();
+    if ( opcao === 3 ) fazerReserva();
+    if ( opcao === 4 ) cancelaReserva();
+    if ( opcao === 5 ) listarReservas();
+    if ( opcao === 6 ) checkIn();
+    if ( opcao === 7 ) checkOut(); 
+    if ( opcao === 8 ) relatorioOcupacao(reservas,hoteis);
+    if ( opcao === 9 ) hoteis = avaliacaoCliente(hoteis);
   }
 
   function cadastrarHotel() {
@@ -1291,19 +1266,6 @@ const exercicio50 = () => {
     return hotel;
   }
 }
-
-//exercicio32();
-//exercicio33(); // em produçãp 
-//exercicio41();
-//exercicio42();
-//exercicio43();
-//exercicio44();
-//exercicio45();
-//exercicio46();
-//exercicio47();
-//exercicio48();
-//exercicio49();
-exercicio50();
 
 function listaDeGastosCategorizada(listaDeGastos) {
   const novoObjeto = {};
