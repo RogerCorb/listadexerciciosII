@@ -12,8 +12,9 @@ parte do programa de formação DEV FULLSTACK que está sendo ministrado pela or
 ## Hospedagem / Deploy 
 
 Para rodar estes projetos vc precisa baixar o repositorio em sua máquina, abrir a pasta no seu vscode , 
-e rodar o comando npm i para que sejam instaladas as extensões node necessarias para rodar os arquivos
-e depois digitar no seu terminal node exercicio01.js e o exercício irá funcionar.
+e no terminal em tela cheia digite o comando npm i para que sejam instaladas as extensões node necessarias para rodar os arquivos.
+depois digitar no seu terminal node app.js,
+será gerado no terminal um menu com opções de 1 a 50 .. cada opção representa um exercício.. escolha o numero do exercício ("opção") desejado e o mesmo será executado.
 
 ## Relatar um problema 
 
