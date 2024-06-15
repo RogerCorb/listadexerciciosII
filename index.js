@@ -1430,32 +1430,7 @@ function verificaHotelReserva(reserva, hotel) {
     } else {
       return true;
     }
-  }
-
-  /*
-  if ( apontador ) {
-    if ( apontador === 1 ) {
-      if (reserva.length === 0) {
-        console.log('Não foram encontrados reservas cadastradas no sistema')
-        return false;
-      }
-    } else {
-      if ( apontador === 2 ) {
-        if (hotel.length === 0) {
-          console.log('Não foram encontrados hoteis cadastrados no sistema')
-          return false;
-        }
-      }
-    }
-  } else {
-    if (reserva.length === 0 || hotel.length === 0) {
-      console.log('Não foram encontradas reservas ou hoteis cadastrados no sistema')
-      return false;
-    }
-    return true;
-  }
-
-  */
+  }  
 }
 
 
