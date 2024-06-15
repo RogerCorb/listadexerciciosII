@@ -8,7 +8,7 @@ const exercicio1 = () => {
 
   const totalMinutesYear = minutesLostDay * (yearsSmoking * 365);
   const daysLost = totalMinutesYear / 1440;
-  console.log(`Vc ja perdeu ${daysLost.toFixed(2)} dias de sua vida fumando !`);  
+  console.log(`Vc ja perdeu ${daysLost.toFixed(2)} dias de sua vida fumando !`);
 }
 
 
@@ -1072,37 +1072,52 @@ const exercicio50 = () => {
     console.log(`\n1 - Cadastrar hoteis.:\n2 - Listar hoteis.:\n3 - Fazer reserva.:\n4 - Cancelar Reserva.:\n5 - Listar reserva.:\n6 - CheckIn.:\n7 - Checkout.:\n8 - Relatorio ocupacao.:\n9 - Avaliar hotel.:\n10 - Sair`);
     opcao = parseInt(prompt(`Digite sua opcao.:`));
 
-    if ( opcao === 1 ) cadastrarHotel();
-    if ( opcao === 2 ) listaHoteisCidade();
-    if ( opcao === 3 ) fazerReserva();
-    if ( opcao === 4 ) cancelaReserva();
-    if ( opcao === 5 ) listarReservas();
-    if ( opcao === 6 ) checkIn();
-    if ( opcao === 7 ) checkOut(); 
-    if ( opcao === 8 ) relatorioOcupacao(reservas,hoteis);
-    if ( opcao === 9 ) hoteis = avaliacaoCliente(hoteis);
+    switch (opcao) {
+
+      case 1: cadastrarHotel();
+        break;
+      case 2: listaHoteisCidade();
+        break;
+      case 3: fazerReserva();
+        break;
+      case 4: cancelaReserva();
+        break;
+      case 5: listarReservas();
+        break;
+      case 6: checkIn();
+        break;
+      case 7: checkOut();
+        break;
+      case 8: relatorioOcupacao(reservas, hoteis);
+        break;
+      case 9: avaliacaoCliente(hoteis);
+        break;
+    }
   }
 
   function cadastrarHotel() {
 
-      const nome = prompt(`Digite o nome do hotel.: `);
-      const cidade = prompt(`Digite a cidade em que o hotel está.:`);
-      const quartosTotal = parseInt(prompt(`Digite a quantidade de quartos do hotel.: `));
-      let reserva = 0;
-      const quartosLivres = quartosTotal - reserva;
+    const nome = prompt(`Digite o nome do hotel.: `);
+    const cidade = prompt(`Digite a cidade em que o hotel está.:`);
+    const quartosTotal = parseInt(prompt(`Digite a quantidade de quartos do hotel.: `));
+    let reserva = 0;
+    const quartosLivres = quartosTotal - reserva;
 
-      if (nome && cidade && quartosTotal > 1) {
+    if (nome && cidade && quartosTotal > 1) {
 
-        let id = hoteis.length < 1 ? 1 : hoteis[hoteis.length - 1].id + 1;
-        hoteis.push({ id, nome, cidade, quartosTotal, quartosLivres });
-        console.log(`Hotel cadastrado com sucesso !`); 
-      } else {
-        console.log(`Todos os campos são obrigatórios o preeenchimento correto`);
-      }
-      
+      let id = hoteis.length < 1 ? 1 : hoteis[hoteis.length - 1].id + 1;
+      hoteis.push({ id, nome, cidade, quartosTotal, quartosLivres });
+      console.log(`Hotel cadastrado com sucesso !`);
+    } else {
+      console.log(`Todos os campos são obrigatórios o preeenchimento correto`);
+    }
+
   }
-   
-  function listaHoteisCidade(){
+
+  function listaHoteisCidade() {
+    if (!verificaHotelReserva('', hoteis)) {
+      return;
+    }
     const cidade = prompt(`Digite o nome da cidade para listar hoteis disponiveis.:`).toLowerCase();
     disponibilidade = 0;
     hoteis.forEach(element => {
@@ -1111,92 +1126,118 @@ const exercicio50 = () => {
         disponibilidade = 1;
       }
     });
-    if(disponibilidade === 0 ) {console.log(`Não há hoteis disponíveis em ${cidade.toUpperCase()} para hospedagem `)}
-  }  
- 
+    if (disponibilidade === 0) { console.log(`Não há hoteis disponíveis em ${cidade.toUpperCase()} para hospedagem `) }
+  }
+
   function fazerReserva() {
+
+    if (!verificaHotelReserva('', hoteis)) {
+      return;
+    }
 
     const nomeCliente = prompt(`Digite o nome do cliente .: `);
     const idHotel = parseInt(prompt(`Digite a ID do hotel que deseja se hospedar.:`));
     const temVaga = hoteis.filter(element => element.id === idHotel);
     const { quartosLivres } = temVaga[0]
 
-    if ( quartosLivres > 0 ) {
-      let month= new Date().toDateString().split(` `)[1];
-      let day  = new Date().toDateString().split(` `)[2];
+    if (quartosLivres > 0) {
+      let month = new Date().toDateString().split(` `)[1];
+      let day = new Date().toDateString().split(` `)[2];
       let year = new Date().toDateString().split(` `)[3];
-      
-      let data = day+'/'+month+'/'+year;     
-      
+
+      let data = day + '/' + month + '/' + year;
+
       let idReserva = reservas.length < 1 ? 1 : reservas[reservas.length - 1].idReserva + 1;
-      let checkout =false;
-      let checkin =false;
-      reservas.push({ idReserva, nomeCliente, idHotel ,month,data,checkout,checkin });
-      hoteis.forEach(element =>  { 
-        if(element.id === idHotel) { 
+      let checkout = false;
+      let checkin = false;
+      reservas.push({ idReserva, nomeCliente, idHotel, month, data, checkout, checkin });
+      hoteis.forEach(element => {
+        if (element.id === idHotel) {
           element.quartosLivres--;
         }
       })
-    } else { 
+      console.log(`reserva registrada com sucesso !`);
+    } else {
       console.log(`Não há quartos disponíveis nesse momento`);
-    }    
+    }
   }
 
   function checkIn() {
 
-    const nomeCliente = prompt(`Digite o nome do cliente .: `).toLowerCase();     
-    reservas.forEach(element => { 
-      if(element.nomeCliente.toLowerCase() === nomeCliente) {               
+    if (!verificaHotelReserva(reservas, hoteis)) {
+      return;
+    }
+
+    const nomeCliente = prompt(`Digite o nome do cliente .: `).toLowerCase();
+    reservas.forEach(element => {
+      if (element.nomeCliente.toLowerCase() === nomeCliente) {
         element.checkin = true;
       }
-    });    
+    });
     console.log(`Checkin realizado com sucesso, Aproveite a estadia!`)
   }
 
   function checkOut() {
+    if (!verificaHotelReserva(reservas, hoteis)) {
+      return;
+    }
 
-    const nomeCliente = prompt(`Digite o nome do cliente .: `).toLowerCase(); 
-    let idHotel = null;   
-    reservas.forEach(element => { 
-      if(element.nomeCliente.toLowerCase() === nomeCliente) {        
-        idHotel= element.idHotel;
-        element.checkout = true;
-      }
-    }) 
-    hoteis.forEach(hotel => {      
-      if(hotel.id === idHotel) { 
-        hotel.quartosLivres++;
+    const nomeCliente = prompt(`Digite o nome do cliente .: `).toLowerCase();
+    let idHotel = null;
+    let verifyCheckin = true;
+    reservas.forEach(element => {
+      if (element.nomeCliente.toLowerCase() === nomeCliente) {
+        idHotel = element.idHotel;
+        if (element.checkin) {
+          element.checkout = true;
+        } else {
+          console.log('Não é possivel fazer o checkout, pois este cliente não fez checkin !');
+          verifyCheckin = false;
+        }
       }
     })
-    console.log(`Obrigado por sua estadia em nosso hotel ! Volte Sempre!`)
+    if (verifyCheckin) {
+      hoteis.forEach(hotel => {
+        if (hotel.id === idHotel) {
+          hotel.quartosLivres++;
+        }
+      })
+      console.log(`Obrigado por sua estadia em nosso hotel ! Volte Sempre!`)
+    }
   }
-  
-  function cancelaReserva() {
 
-    const nomeCliente = prompt(`Digite o nome do cliente .: `).toLowerCase(); 
-    let idHotel = null; 
-    let check = true;  
-    reservas.forEach(element => { 
-      if(element.nomeCliente.toLowerCase() === nomeCliente && !element.checkin) {        
-        idHotel= element.idHotel;
+  function cancelaReserva() {
+    if (!verificaHotelReserva(reservas, hoteis)) {
+      return;
+    }
+
+    const nomeCliente = prompt(`Digite o nome do cliente .: `).toLowerCase();
+    let idHotel = null;
+    let check = true;
+    reservas.forEach(element => {
+      if (element.nomeCliente.toLowerCase() === nomeCliente && !element.checkin) {
+        idHotel = element.idHotel;
         element.checkout = true;
         check = false;
       }
-    }) 
-    hoteis.forEach(hotel => {      
-      if(hotel.id === idHotel) { 
+    })
+    hoteis.forEach(hotel => {
+      if (hotel.id === idHotel) {
         hotel.quartosLivres++;
       }
     })
-    if(!check){
+    if (!check) {
       console.log(`Sua reserva foi cancelada com sucesso !`);
-    } else { 
+    } else {
       console.log(`Não é possivel cancelar sua reserva, fale com a administração`);
     }
-    
+
   }
 
   function listarReservas() {
+    if (!verificaHotelReserva(reservas, hoteis)) {
+      return;
+    }
     let todasAsreservas = [];
 
     reservas.forEach(element => {
@@ -1204,71 +1245,75 @@ const exercicio50 = () => {
       let idReserva = element.idReserva;
       let nomeCliente = element.nomeCliente;
       const hotelReservado = hoteis.filter(t => t.id === idHotel);
-      let { nome ,cidade , quartosTotal, quartosLivres} = hotelReservado[0];
-      if(!element.checkout) {
-         todasAsreservas.push({ idReserva,nomeCliente,idHotel,nome,cidade,quartosTotal,quartosLivres });
-      }      
+      let { nome, cidade, quartosTotal, quartosLivres } = hotelReservado[0];
+      if (!element.checkout) {
+        todasAsreservas.push({ idReserva, nomeCliente, idHotel, nome, cidade, quartosTotal, quartosLivres });
+      }
     })
     console.log(...todasAsreservas)
-  }  
+  }
 
-  function relatorioOcupacao(vetorReserva,vetorHotel) { 
+  function relatorioOcupacao(vetorReserva, vetorHotel) {
+    if (!verificaHotelReserva(reservas, hoteis)) {
+      return;
+    }
     let vetorRelatorio = null;
-    const nomeHotel =  prompt(`Digite o nome do hotel para gerar um relatório de ocupação.:`).toLowerCase();
-    if (nomeHotel && isNaN(nomeHotel)) {      
-      vetorRelatorio = vetorHotel.filter(t => t.nome === nomeHotel);                  
-    } else {     
+    const nomeHotel = prompt(`Digite o nome do hotel para gerar um relatório de ocupação.:`).toLowerCase();
+    if (nomeHotel && isNaN(nomeHotel)) {
+      vetorRelatorio = vetorHotel.filter(t => t.nome === nomeHotel);
+    } else {
       console.log(`Digite um nome tipo string para consulta:`);
-      return     
+      return
     }
     const vetorResultadoFiltroReserva = vetorReserva.filter(t => t.idHotel === vetorRelatorio[0].id);
-    const quartosCheckin  = vetorResultadoFiltroReserva.filter(check => check.checkin);
+    const quartosCheckin = vetorResultadoFiltroReserva.filter(check => check.checkin);
 
     let quartosUtilizados = quartosCheckin.length;
     let quartosTotais = vetorRelatorio[0].quartosTotal;
-    let percentualOcupacao = (quartosUtilizados/quartosTotais) * 100;
-    console.log(`\nA Taxa de ocupação do hotel no mes de ${vetorResultadoFiltroReserva[0].month} foi ${percentualOcupacao.toFixed(2)} % `);        
+    let percentualOcupacao = (quartosUtilizados / quartosTotais) * 100;
+    console.log(`\nA Taxa de ocupação do hotel no mes de ${vetorResultadoFiltroReserva[0].month} foi ${percentualOcupacao.toFixed(2)} % `);
     console.log(`Rotatividade de hospedes deste mes:`)
     console.log(`********************************************************`)
-    quartosCheckin.forEach(t => { 
+    quartosCheckin.forEach(t => {
       console.log(`${t.data}`)
-    })    
+    })
   }
 
 
   function avaliacaoCliente(hotel) {
-    
-    const nomeCliente = prompt(`Digite o nome do cliente .: `).toLowerCase();    
 
-    if(reservas.length === 0 || hotel.length === 0 ) { 
-      console.log('Não foram encontradas reservas ou hoteis cadastrados no sistema')
-      return
-    }    
+    const nomeCliente = prompt(`Digite o nome do cliente .: `).toLowerCase();
+
+    if (!verificaHotelReserva(reservas, hoteis)) {
+      return;
+    }
+
     let encontraReserva = reservas.filter(element => element.nomeCliente.toLowerCase() === nomeCliente);
     let idHotel = null;
-    if (encontraReserva[0].checkin) {  
+    if (encontraReserva[0].checkin) {
       idHotel = encontraReserva[0].idHotel;
-    } else { 
+    } else {
       console.log(`Cliente não se hospedou em nenhum hotel, impossibilitado de avaliar nossos serviços ! `);
-      return hotel;
-    }    
-    
+      return //hotel;
+    }
+
     let encontraHotel = null;
-    let nota = null;    
+    let nota = null;
     nota = parseInt(prompt(`Digite uma nota de 0 a 5 para avaliar nossos serviços.: `));
-    encontraHotel=hotel.filter(h => h.id === idHotel);
-    hotel.forEach(h => { 
-      if (h.id === encontraHotel[0].id) {                    
-          if (Object.hasOwn(h, 'avaliacao')) {
-            h.avaliacao.push(nota);           
-          } else { 
-            h['avaliacao']=[];
-            h.avaliacao.push(nota);
-          }
+    encontraHotel = hotel.filter(h => h.id === idHotel);
+    hotel.forEach(h => {
+      if (h.id === encontraHotel[0].id) {
+        if (Object.hasOwn(h, 'avaliacao')) {
+          h.avaliacao.push(nota);
+        } else {
+          h['avaliacao'] = [];
+          h.avaliacao.push(nota);
+        }
       }
     });
     console.log(`Nota computada com sucesso em nosso sistema !`);
-    return hotel;
+    hoteis = hotel;
+    //return hotel;
   }
 }
 
@@ -1358,14 +1403,68 @@ function sumVetor(vetor) {
     (accumulator, currentValue) => accumulator + currentValue,
   );
   return sumWithInitial;
-} 
+}
 
-module.exports={
-  exercicio1,exercicio2,exercicio3,exercicio4,exercicio5,exercicio6,exercicio7,exercicio8,
-  exercicio9,exercicio10,exercicio11,exercicio12,exercicio13,exercicio14,exercicio15,exercicio16,
-  exercicio17,exercicio18,exercicio19,exercicio20,exercicio21,exercicio22,exercicio23,exercicio24,
-  exercicio25,exercicio26,exercicio27,exercicio28,exercicio29,exercicio30,exercicio31,exercicio32,
-  exercicio33,exercicio34,exercicio35,exercicio36,exercicio37,exercicio38,exercicio39,exercicio40,
-  exercicio41,exercicio42,exercicio43,exercicio44,exercicio45,exercicio46,exercicio47,exercicio48,
-  exercicio49,exercicio50
+function verificaHotelReserva(reserva, hotel) {
+
+  if (reserva && hotel) {
+    if (reserva.length === 0 || hotel.length === 0) {
+      console.log('Não foram encontradas reservas ou hoteis cadastrados no sistema')
+      return false;
+    } else {
+      return true;
+    }
+  }
+  if (!hotel) {
+    if (reserva.length === 0) {
+      console.log('Não foram encontrados reservas cadastradas no sistema')
+      return false;
+    } else {
+      return true;
+    }
+  }
+  if (!reserva) {
+    if (hotel.length === 0) {
+      console.log('Não foram encontrados hoteis cadastrados no sistema')
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  /*
+  if ( apontador ) {
+    if ( apontador === 1 ) {
+      if (reserva.length === 0) {
+        console.log('Não foram encontrados reservas cadastradas no sistema')
+        return false;
+      }
+    } else {
+      if ( apontador === 2 ) {
+        if (hotel.length === 0) {
+          console.log('Não foram encontrados hoteis cadastrados no sistema')
+          return false;
+        }
+      }
+    }
+  } else {
+    if (reserva.length === 0 || hotel.length === 0) {
+      console.log('Não foram encontradas reservas ou hoteis cadastrados no sistema')
+      return false;
+    }
+    return true;
+  }
+
+  */
+}
+
+
+module.exports = {
+  exercicio1, exercicio2, exercicio3, exercicio4, exercicio5, exercicio6, exercicio7, exercicio8,
+  exercicio9, exercicio10, exercicio11, exercicio12, exercicio13, exercicio14, exercicio15, exercicio16,
+  exercicio17, exercicio18, exercicio19, exercicio20, exercicio21, exercicio22, exercicio23, exercicio24,
+  exercicio25, exercicio26, exercicio27, exercicio28, exercicio29, exercicio30, exercicio31, exercicio32,
+  exercicio33, exercicio34, exercicio35, exercicio36, exercicio37, exercicio38, exercicio39, exercicio40,
+  exercicio41, exercicio42, exercicio43, exercicio44, exercicio45, exercicio46, exercicio47, exercicio48,
+  exercicio49, exercicio50
 }
